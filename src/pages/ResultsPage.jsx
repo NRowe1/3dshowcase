@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { useGLTF, Stage, PresentationControls } from '@react-three/drei';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
-
-function Model({ url }) {
-  const { scene } = useGLTF(url);
-  return <primitive object={scene} />;
-}
+import '../styles/ResultsPage.css';  // Import the CSS file
 
 function ResultsPage() {
-  const [modelUrl, setModelUrl] = useState(null);
   const [searchResults, setSearchResults] = useState([]);
+  const [selectedModelUid, setSelectedModelUid] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
   const query = new URLSearchParams(location.search).get('query');
@@ -25,52 +19,54 @@ function ResultsPage() {
   const handleSearch = async (query) => {
     const response = await fetch(`https://api.sketchfab.com/v3/search?type=models&q=${query}&features=downloadable`, {
       headers: {
-        Authorization: `Bearer YOUR_SKETCHFAB_API_TOKEN`,
+        Authorization: `Bearer d9528636b2bb4ef7861e721de45cb231`,
       },
     });
     const data = await response.json();
     setSearchResults(data.results);
   };
 
-  const handleModelSelect = async (uid) => {
-    const response = await fetch(`https://api.sketchfab.com/v3/models/${uid}`, {
-      headers: {
-        Authorization: `Bearer YOUR_SKETCHFAB_API_TOKEN`,
-      },
-    });
-    const modelData = await response.json();
-    if (modelData.download) {
-      const gltfUrl = modelData.download.gltf.url;
-      setModelUrl(gltfUrl);
-    } else {
-      alert('This model is not available for download.');
-    }
+  const handleModelSelect = (uid) => {
+    setSelectedModelUid(uid);
   };
+
+  useEffect(() => {
+    if (selectedModelUid) {
+      const iframe = document.getElementById('sketchfab-iframe');
+      const client = new window.Sketchfab(iframe);
+      client.init(selectedModelUid, {
+        success: () => {
+          console.log('Model loaded successfully');
+        },
+        error: () => {
+          console.log('Error loading model');
+        },
+      });
+    }
+  }, [selectedModelUid]);
 
   return (
     <div>
-      <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 1, backgroundColor: 'white', padding: '10px', borderRadius: '8px' }}>
-        <SearchBar onSearch={(query) => navigate(`/results?query=${query}`)} />
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+      <div className="container">
+        <SearchBar onSearch={(query) => navigate(`/results?query=${query}`)} className="search-bar" />
+        <ul className="results-list">
           {searchResults.map((result) => (
-            <li key={result.uid} onClick={() => handleModelSelect(result.uid)} style={{ cursor: 'pointer', marginBottom: '5px' }}>
+            <li key={result.uid} onClick={() => handleModelSelect(result.uid)} className="result-item">
+              <img src={result.thumbnails.images[0].url} alt={result.name} />
               {result.name}
             </li>
           ))}
         </ul>
       </div>
-      <div style={{ width: '600px', height: '400px', position: 'relative', margin: '0 auto' }}>
-        <Canvas dpr={[1, 2]} shadows camera={{ fov: 45 }} style={{ width: '100%', height: '100%' }}>
-          <color attach="background" args={['#101010']} />
-          <PresentationControls speed={1.5} global zoom={1.5} polar={[-0.1, Math.PI / 4]}>
-            <Stage environment={null}>
-              {modelUrl && <Model url={modelUrl} scale={0.01} />}
-            </Stage>
-          </PresentationControls>
-        </Canvas>
+      <div className="viewer-container">
+        <iframe
+          id="sketchfab-iframe"
+          title="Sketchfab Viewer"
+          allow="autoplay; fullscreen; vr"
+        ></iframe>
       </div>
     </div>
   );
 }
 
-export default ResultsPage;  // Ensure the default export
+export default ResultsPage;
