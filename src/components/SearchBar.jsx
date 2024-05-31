@@ -1,25 +1,24 @@
+// src/components/SearchBar.js
 import React, { useState } from 'react';
 
-function SearchBar({ onSearch }) {
+const SearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState('');
 
-  const handleSearch = (e) => {
-    e.preventDefault();
+  const handleSearch = () => {
     onSearch(query);
   };
 
   return (
-    <form onSubmit={handleSearch} style={{ marginBottom: '10px' }}>
+    <div className="search-bar">
       <input
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search Sketchfab"
-        style={{ padding: '5px', fontSize: '16px', width: '200px' }}
+        placeholder="Search for models..."
       />
-      <button type="submit" style={{ padding: '5px', fontSize: '16px' }}>Search</button>
-    </form>
+      <button onClick={handleSearch}>Search</button>
+    </div>
   );
-}
+};
 
-export default SearchBar;  // Ensure the default export
+export default SearchBar;

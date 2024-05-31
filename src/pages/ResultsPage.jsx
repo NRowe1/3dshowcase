@@ -1,3 +1,4 @@
+// src/pages/ResultsPage.js
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
@@ -48,22 +49,24 @@ function ResultsPage() {
   return (
     <div>
       <div className="container">
-        <SearchBar onSearch={(query) => navigate(`/results?query=${query}`)} className="search-bar" />
-        <ul className="results-list">
-          {searchResults.map((result) => (
-            <li key={result.uid} onClick={() => handleModelSelect(result.uid)} className="result-item">
-              <img src={result.thumbnails.images[0].url} alt={result.name} />
-              {result.name}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="viewer-container">
-        <iframe
-          id="sketchfab-iframe"
-          title="Sketchfab Viewer"
-          allow="autoplay; fullscreen; vr"
-        ></iframe>
+        <div className="sidebar">
+          <SearchBar onSearch={(query) => navigate(`/results?query=${query}`)} className="search-bar" />
+          <ul className="results-list">
+            {searchResults.map((result) => (
+              <li key={result.uid} onClick={() => handleModelSelect(result.uid)} className="result-item">
+                <img src={result.thumbnails.images[0].url} alt={result.name} />
+                {result.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="viewer-container">
+          <iframe
+            id="sketchfab-iframe"
+            title="Sketchfab Viewer"
+            allow="autoplay; fullscreen; vr"
+          ></iframe>
+        </div>
       </div>
     </div>
   );
