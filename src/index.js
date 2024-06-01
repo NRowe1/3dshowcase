@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ResultsPage from './pages/ResultsPage';
-import SearchBar from './components/SearchBar'; // Add this import if SearchBar is used as a route component
+import SearchBar from './components/SearchBar'; 
 import './styles/index.css';
 
 ReactDOM.render(

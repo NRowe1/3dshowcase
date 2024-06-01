@@ -1,4 +1,3 @@
-// src/pages/ResultsPage.js
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
@@ -20,7 +19,7 @@ function ResultsPage() {
   const handleSearch = async (query) => {
     const response = await fetch(`https://api.sketchfab.com/v3/search?type=models&q=${query}&features=downloadable`, {
       headers: {
-        Authorization: `Bearer d9528636b2bb4ef7861e721de45cb231`,
+        Authorization: `Bearer YOUR_SKETCHFAB_API_TOKEN`,
       },
     });
     const data = await response.json();
@@ -48,18 +47,18 @@ function ResultsPage() {
 
   return (
     <div>
+      <div className="search-bar-container">
+        <SearchBar onSearch={(query) => navigate(`/results?query=${query}`)} className="search-bar" />
+      </div>
       <div className="container">
-        <div className="sidebar">
-          <SearchBar onSearch={(query) => navigate(`/results?query=${query}`)} className="search-bar" />
-          <ul className="results-list">
-            {searchResults.map((result) => (
-              <li key={result.uid} onClick={() => handleModelSelect(result.uid)} className="result-item">
-                <img src={result.thumbnails.images[0].url} alt={result.name} />
-                {result.name}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="results-list">
+          {searchResults.map((result) => (
+            <li key={result.uid} onClick={() => handleModelSelect(result.uid)} className="result-item">
+              <img src={result.thumbnails.images[0].url} alt={result.name} />
+              {result.name}
+            </li>
+          ))}
+        </ul>
         <div className="viewer-container">
           <iframe
             id="sketchfab-iframe"

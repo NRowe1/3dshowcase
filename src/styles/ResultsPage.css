@@ -1,18 +1,36 @@
 /* src/styles/ResultsPage.css */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
 .container {
   display: flex;
-  height: 100vh;
+  flex-direction: column;
+  height: 100%;
+}
+
+.search-bar-container {
+  padding: 10px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+
+.search-bar {
+  margin: 0 auto;
+  width: 50%; /* Adjust width as needed */
 }
 
 .results-list {
   list-style-type: none;
-  padding: 0;
+  padding: 10px;
   margin: 0;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: row;
   gap: 16px;
-  width: 300px;
-  overflow-y: auto;
+  overflow-x: auto; /* Enable horizontal scrolling */
 }
 
 .result-item {
@@ -29,18 +47,16 @@
 }
 
 .viewer-container {
-  flex: 1;
+  /* flex: 1; */
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+  width:100;
+  padding: 20px; /* Add padding for better spacing */
+  box-sizing: border-box; /* Ensure padding doesn't affect the width/height */
 }
 
 .viewer-container iframe {
-  width: 100%;
-  height: 100%;
   border: none;
-}
-
-.search-bar {
-  margin-bottom: 20px;
 }
